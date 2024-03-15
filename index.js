@@ -3,7 +3,7 @@ var jwt = require("jsonwebtoken");
 const cors = require("cors");
 // require("./socket/server").socket();
 require("./db/config");
-const dotenv=require("dotenv");
+const dotenv = require("dotenv");
 dotenv.config();
 
 // const io = require('socket.io');
@@ -17,7 +17,6 @@ const path = require("path");
 const app = express();
 app.use(cors());
 app.use(express.json());
-
 
 //to get static files . to connect client folder to server
 // app.use(express.static(path.join(__dirname,"../client/build/")));
@@ -123,39 +122,21 @@ const server = app.listen(PORT, () => {
   console.log(`server is running on: ${PORT}`);
 });
 
-
 // ------------------------------------------------------socket----------------------------
 
-
-const io = require('socket.io')(server,{cors: {origin: "*"}});
+const io = require("socket.io")(server, { cors: { origin: "*" } });
 function getTopic(event) {
   return `doc_${event._id}`;
 }
 
-// const PORT = process.env.PORT || 4000;
+io.on("connection", (client) => {
+  console.log("socket client connected------", client.id);
 
-// const socket = () => {
-  io.on("connection", (client) => {
-    console.log("socket client connected------", client.id);
-
-    client.on("text", (data) => {
-      console.log("event data text", data);
-      io.emit(getTopic(data), data);
-    });
-    client.on("disconnect", (info) => {
-      console.log("Disconnected", info);
-    });
+  client.on("text", (data) => {
+    console.log("event data text", data);
+    io.emit(getTopic(data), data);
   });
-
-
-
-  // socket server PORT
-  
-  // io.listen(3500, () => {
-  //   console.log("Sockets running on: 3500");
-  // });
-// };
-
-
-
-// module.exports = { socket };
+  client.on("disconnect", (info) => {
+    console.log("Disconnected", info);
+  });
+});

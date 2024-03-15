@@ -1,13 +1,13 @@
 FROM node:latest
 
-WORKDIR /app
+WORKDIR /server
 
-COPY package.json .
+COPY ["package*.json","./"]
 
 RUN npm install
 
 COPY . .
 
-EXPOSE 80
+EXPOSE 4000
 
 CMD [ "npm","start" ]
